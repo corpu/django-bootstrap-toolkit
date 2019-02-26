@@ -42,7 +42,7 @@ def bootstrap_stylesheet_url(css=None):
     """
     url = BOOTSTRAP_CSS_URL
     if css:
-        url = BOOTSTRAP_CSS_BASE_URL + u'bootstrap-%s.css' % css
+        url = BOOTSTRAP_CSS_BASE_URL + 'bootstrap-%s.css' % css
     else:
         url = BOOTSTRAP_CSS_URL
     return url
@@ -53,7 +53,7 @@ def bootstrap_stylesheet_tag(css=None):
     """
     HTML tag to insert Bootstrap stylesheet
     """
-    return u'<link rel="stylesheet" href="%s">' % bootstrap_stylesheet_url(css)
+    return '<link rel="stylesheet" href="%s">' % bootstrap_stylesheet_url(css)
 
 
 @register.simple_tag
@@ -76,8 +76,8 @@ def bootstrap_javascript_tag(name=None):
     """
     url = bootstrap_javascript_url(name)
     if url:
-        return u'<script src="%s"></script>' % url
-    return u''
+        return '<script src="%s"></script>' % url
+    return ''
 
 
 @register.filter
@@ -149,20 +149,20 @@ def bootstrap_input_type(field):
         raise ValueError("Expected a Field, got a %s" % type(field))
     input_type = getattr(widget, 'bootstrap_input_type', None)
     if input_type:
-        return unicode(input_type)
+        return str(input_type)
     if isinstance(widget, TextInput):
-        return u'text'
+        return 'text'
     if isinstance(widget, CheckboxInput):
-        return u'checkbox'
+        return 'checkbox'
     if isinstance(widget, CheckboxSelectMultiple):
-        return u'multicheckbox'
+        return 'multicheckbox'
     if isinstance(widget, RadioSelect):
-        return u'radioset'
-    return u'default'
+        return 'radioset'
+    return 'default'
 
 
 @register.simple_tag
-def active_url(request, url, output=u'active'):
+def active_url(request, url, output='active'):
     # Tag that outputs text if the given url is active for the request
     if url == request.path:
         return output
@@ -195,9 +195,9 @@ def html_attrs(attrs):
     u'href="http://theurl.com/img.png" alt="hi &quot;guy" '
     """
     pairs = []
-    for name, value in attrs.items():
-        pairs.append(u'%s="%s"' % (escape(name), escape(value)))
-    return mark_safe(u' '.join(pairs))
+    for name, value in list(attrs.items()):
+        pairs.append('%s="%s"' % (escape(name), escape(value)))
+    return mark_safe(' '.join(pairs))
 
 
 @register.simple_tag(takes_context=True)
@@ -328,7 +328,7 @@ def get_pagination_context(page, pages_to_show=11, url=None, size=None, align=No
         pages_forward = None
         if first_page > 1:
             first_page -= 1
-        if pages_back > 1:
+        if pages_back is not None and pages_back > 1:
             pages_back -= 1
         else:
             pages_back = None
@@ -338,21 +338,21 @@ def get_pagination_context(page, pages_to_show=11, url=None, size=None, align=No
     # Append proper character to url
     if url:
         # Remove existing page GET parameters
-        url = unicode(url)
-        url = re.sub(r'\?page\=[^\&]+', u'?', url)
-        url = re.sub(r'\&page\=[^\&]+', u'', url)
+        url = str(url)
+        url = re.sub(r'\?page\=[^\&]+', '?', url)
+        url = re.sub(r'\&page\=[^\&]+', '', url)
         # Append proper separator
-        if u'?' in url:
-            url += u'&'
+        if '?' in url:
+            url += '&'
         else:
-            url += u'?'
+            url += '?'
     # Append extra string to url
     if extra:
         if not url:
-            url = u'?'
-        url += unicode(extra) + u'&'
+            url = '?'
+        url += str(extra) + '&'
     if url:
-        url = url.replace(u'?&', u'?')
+        url = url.replace('?&', '?')
     # Set CSS classes, see http://twitter.github.io/bootstrap/components.html#pagination
     pagination_css_classes = ['pagination']
     if size in ['small', 'large', 'mini']:

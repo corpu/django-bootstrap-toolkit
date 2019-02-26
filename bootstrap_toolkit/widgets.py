@@ -30,12 +30,12 @@ def add_to_css_class(classes, new_class):
         # Strip whitespace
         classes = [c.strip() for c in classes]
         # Remove empty elements
-        classes = filter(None, classes)
+        classes = [_f for _f in classes if _f]
         # Test for existing
         if not new_class in classes:
             classes.append(new_class)
             # Convert to string
-        classes = u' '.join(classes)
+        classes = ' '.join(classes)
     return classes
 
 
@@ -71,7 +71,7 @@ class BootstrapUneditableInput(forms.TextInput):
         klass = add_to_css_class(self.attrs.pop('class', ''), 'uneditable-input')
         klass = add_to_css_class(klass, attrs.pop('class', ''))
         base = super(BootstrapUneditableInput, self).render(name, value, attrs)
-        return mark_safe(base + u'<span class="%s">%s</span>' % (klass, conditional_escape(value)))
+        return mark_safe(base + '<span class="%s">%s</span>' % (klass, conditional_escape(value)))
 
 
 class BootstrapTextInput(forms.TextInput):
